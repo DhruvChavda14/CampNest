@@ -132,17 +132,23 @@ passport.deserializeUser(User.deserializeUser()) // how do we get user out of se
 
 // deserialize - Takes the unique identifier (like user.id from serialization) and fetches the complete user object from the database or another data store. Allows access to the full user information (like username, email, etc.) whenever it’s needed in requests, without requiring all user data in the session.
 
-app.use((req,res,next)=>{
-    if(!['/login','/'].includes(req.originalUrl)){
-        req.session.returnTo = req.originalUrl
-        console.log(req.originalUrl)
+app.use((req, res, next) => {
+    // Set returnTo session if not on login or home page
+    if (!['/login', '/'].includes(req.originalUrl)) {
+        req.session.returnTo = req.originalUrl;
+        console.log('Return To URL:', req.originalUrl);
     }
-    res.locals.currentUser = req.user
-    res.locals.success = req.flash
-    ('success')
-    res.locals.error=req.flash('error')
+
+    // Ensure currentUser is set (Check if req.user exists, else set null)
+    res.locals.currentUser = req.user || null;
+
+    // Correctly assign flash messages
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+
     next();
-})
+});
+
 
 app.use('/',userRoutes)
 app.use('/campgrounds',campgroundRoutes)
