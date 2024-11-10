@@ -14,7 +14,7 @@ const session = require('express-session')
 const passport = require('passport')
 const localStrategy = require('passport-local')
 const User = require('./models/user.js')
-const MongoDBStore = require('connect-mongo')(session)
+const MongoStore = require('connect-mongo');
 const userRoutes = require('./routes/user.js')
 const campgroundRoutes = require('./routes/campground.js')
 const reviewRoutes = require('./routes/reviews.js')
@@ -22,6 +22,7 @@ const reviewRoutes = require('./routes/reviews.js')
 // 'mongodb://localhost:27017/yelp-camp'
 // 
 const dbUrl = process.env.DB_URL
+
 mongoose.connect(dbUrl)
     .then(() => {
         console.log("Database connected");
@@ -44,10 +45,12 @@ app.use(mongoSanitize({
 }))
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
 
-const store = new MongoDBStore({
-    url: dbUrl,
-    secret,
-    touchAfter: 24 * 60 * 60
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
 });
 
 store.on("error", function (e) {
