@@ -42,6 +42,13 @@
                     <li class="list-group-item">
                         Submitted by - <%=campground.author.username%>
                     </li>
+                    <li class="list-group-item">
+                        <p>If you have any questions or need assistance with booking, feel free to reach out to us at <a
+                                href="mailto:<%= currentUser.email %>">
+                                <%= currentUser.email %>
+                            </a>.</p>
+
+                    </li>
                     <li class="list-group-item">$<%=campground.price%>/night</li>
                 </ul>
                 <% if(currentUser && campground.author.equals(currentUser._id)) {%>
